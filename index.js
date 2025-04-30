@@ -34,6 +34,16 @@ app.get('/', (req, res) => {
 
 
 // api request
+// get all users
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find({}).select("_id username")
+    res.json(users)
+  } catch (error) {
+    res.json(error)
+  }
+})
+
 // create user
 app.post('/api/users', async (req, res) => {
   const { username } = req.body
@@ -86,7 +96,6 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
       error
     })
   }
-
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
