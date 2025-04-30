@@ -49,19 +49,25 @@ app.get('/api/users', async (req, res) => {
 // create user
 app.post('/api/users', async (req, res) => {
   const { username } = req.body
-  const userObj = new User({
-    username,
-  })
-
+  
   try {
-    const user = await userObj.save()
-    res.json(user)
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.json(existingUser);
+    }
+
+    const userObj = new User({
+      username,
+    });
+
+    const user = await userObj.save();
+    res.json(user);
   } catch (err) {
     res.json({
-      error: err
-    })
+      error: err,
+    });
   }
-})
+});
 
 // create exercise tracker
 app.post('/api/users/:_id/exercises', async (req, res) => {
