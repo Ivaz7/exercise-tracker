@@ -51,6 +51,44 @@ app.post('/api/users', async (req, res) => {
   }
 })
 
+// create exercise tracker
+app.post('/api/users/:_id/exercises', async (req, res) => {
+  const {
+    description,
+    duration,
+    date
+  } = req.body
+  const id = req.params._id
+
+  try {
+    const user = await User.findById(id)
+
+    if (!user) {
+      res.send("The user is not found")
+    } else {
+      const exerciseObj = new Exercise({
+        user_id: user._id,
+        description,
+        duration,
+        date: date ? new Date(date) : new Date
+      })
+      const exercise = await exerciseObj.save()
+      res.json({
+        _id: user._id,
+        username: user.username,
+        description: exercise.description,
+        duration: exercise.duration,
+        date: new Date(exercise.date).toDateString()
+      })
+    }
+  } catch (error) {
+    res.json({
+      error
+    })
+  }
+
+})
+
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
