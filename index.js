@@ -53,7 +53,8 @@ app.post('/api/users', async (req, res) => {
   try {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.json(existingUser);
+      res.json(existingUser);
+      return 
     }
 
     const userObj = new User({
